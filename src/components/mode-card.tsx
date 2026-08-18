@@ -25,7 +25,7 @@ export function ModeCard({ eyebrow, title, description, icon, tone = "indigo", o
         toneStyles[tone]
       )}
     >
-      <div className="relative z-10 max-w-[55%]">
+      <div className="relative z-10 max-w-[100%]">
         <p className="text-sm font-medium text-white/80">{eyebrow}</p>
         <p className="mt-0.5 text-xl font-bold">{title}</p>
         <p className="mt-1 text-sm text-white/80">{description}</p>
@@ -33,11 +33,11 @@ export function ModeCard({ eyebrow, title, description, icon, tone = "indigo", o
       {icon && (
         <div
           className={cn(
-            "absolute right-[-10px] bottom-[-6px] flex h-28 w-28 items-end justify-end overflow-hidden opacity-100",
+            "absolute right-[-10px] bottom-[-6px] flex h-28 w-28 items-end justify-end overflow-b-hidden opacity-100",
             "pointer-events-none"
           )}
         >
-          <div className="h-[116px] w-[116px] [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_svg]:h-full [&_svg]:w-full">
+          <div className="h-[auto] w-[116px] [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_svg]:h-full [&_svg]:w-full">
             {icon}
           </div>
         </div>
