@@ -22,7 +22,7 @@ const sidebarItems = [
   { key: "home", label: "Home", href: "/", icon: HomeIcon },
   { key: "tutor", label: "Ask Tutor", href: "/tutor", icon: MessageCircleMore },
   { key: "photo", label: "Photo Solver", href: "/photo-solver", icon: Camera },
-  { key: "reader", label: "Read Document", href: "/reader", icon: FileText },
+  { key: "reader", label: "Help me read", href: "/reader", icon: FileText },
   { key: "history", label: "History", href: "/history", icon: Clock3 },
 ];
 
@@ -199,8 +199,8 @@ export function DesktopHome() {
               <HeroCard
                 tone="emerald"
                 icon={<Image src="/images/geezer.png" alt="Reading avatar" width={110} height={110} className="h-[92px] w-[92px] object-contain" />}
-                title="I want to read something"
-                description="Take a photo and I'll read and explain it to you."
+                title="I need help reading"
+                description="For elders and anyone who wants a document read or explained."
                 cta="Read Now"
                 href="/reader"
               />

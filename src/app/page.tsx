@@ -53,9 +53,9 @@ function MobileHome() {
           onClick={() => router.push("/student")}
         />
         <ModeCard
-          eyebrow="I need help"
-          title="Reading Documents"
-          description="Read and understand documents easily"
+          eyebrow="I need Support"
+          title="Help me read"
+          description="For elders and anyone who wants a document read or explained"
           icon={<Image src="/images/geezer.png" alt="" width={72} height={72} className="h-14 w-14 object-contain" />}
           tone="emerald"
           onClick={() => router.push("/reader")}
