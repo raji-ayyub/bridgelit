@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { ChevronLeft, Menu } from "lucide-react";
-
+import Link from "next/link";
 import Image from "next/image";
 import logo from "images/bridgelit-logo.png"
 
@@ -34,7 +34,9 @@ export function AppHeader({ title, onBack, onMenu, right }: AppHeaderProps) {
               aria-label="Open menu"
               className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 gap-2 hover:bg-slate-100"
             >
-              <Image src={"images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
+              <Link href={"/"} >
+                <Image src={"/images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
+              </Link>
 
               <Menu className="h-5 w-5" />
             </button>

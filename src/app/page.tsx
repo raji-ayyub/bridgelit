@@ -26,6 +26,9 @@ function MobileHome() {
           aria-label="Open menu"
           className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
         >
+          <Link href={"/"} >
+            <Image src={"/images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
+          </Link>
           <Menu className="h-5 w-5" />
         </button>
         <StatusPill online={false} />
