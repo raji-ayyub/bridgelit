@@ -24,12 +24,12 @@ function MobileHome() {
       <header className="flex items-center justify-between">
         <button
           aria-label="Open menu"
-          className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
+          className="flex h-9 w-9 gap-2 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
         >
           <Link href={"/"} >
-            <Image src={"/images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
+            <Image src={"/images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem] min-w-[1.5rem]"/>
           </Link>
-          <Menu className="h-5 w-5" />
+          <Menu className="h-5 min-w-5" />
         </button>
         <StatusPill online={false} />
       </header>

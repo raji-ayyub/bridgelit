@@ -32,13 +32,13 @@ export function AppHeader({ title, onBack, onMenu, right }: AppHeaderProps) {
             <button
               onClick={onMenu}
               aria-label="Open menu"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 gap-2 hover:bg-slate-100"
+              className="flex gap-2 h-8 w-8 items-center justify-center rounded-full text-slate-500 gap-2 hover:bg-slate-100"
             >
               <Link href={"/"} >
-                <Image src={"/images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
+                <Image src={"/images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem] min-w-[1.5rem]"/>
               </Link>
 
-              <Menu className="h-5 w-5" />
+              {/* <Menu className="h-5 min-w-5" /> */}
             </button>
           </div>
         )}
