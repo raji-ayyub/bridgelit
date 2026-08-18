@@ -15,7 +15,7 @@ interface AppHeaderProps {
 export function AppHeader({ title, onBack, onMenu, right }: AppHeaderProps) {
   return (
     <header className="flex items-center justify-between px-4 py-3">
-            <Image src={"images/bridgelit-logo.png"} alt="logo" width={200} height={200}/>
+            <Image src={"images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
 
       <div className="flex items-center gap-3">
         {onBack && (
