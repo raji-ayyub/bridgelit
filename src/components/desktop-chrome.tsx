@@ -36,7 +36,14 @@ export function DesktopChrome({ children }: { children: ReactNode }) {
         <aside className="flex w-[230px] shrink-0 flex-col border-r border-slate-100 bg-white px-5 py-5">
           <div className="flex flex-col items-center text-center">
             <div className="relative h-20 w-20 overflow-hidden rounded-[22px] shadow-lg shadow-violet-500/20">
-              <Image src="/images/bridgelit-logo.png" alt="BridgeLit logo" fill className="object-cover" priority />
+              <Image
+                src="/images/bridgelit-logo.png"
+                alt="BridgeLit logo"
+                fill
+                sizes="80px"
+                className="object-cover"
+                priority
+              />
             </div>
             <h1 className="mt-4 text-[24px] font-semibold tracking-tight text-slate-950">BridgeLit</h1>
             <p className="mt-2 max-w-[168px] text-[13px] leading-5 text-slate-600">AI-Powered Learning &amp; Literacy Companion</p>
