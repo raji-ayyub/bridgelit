@@ -12,6 +12,17 @@ import { Card } from "@/components/ui/card";
 export default function TutorPage() {
   const router = useRouter();
   const [prompt, setPrompt] = useState("Explain photosynthesis in simple terms.");
+  const explanation =
+    "Photosynthesis is how plants make their own food. They use sunlight, water, and carbon dioxide to make glucose and release oxygen.";
+
+  function handleSpeak() {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(explanation);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  }
 
   return (
     <>
@@ -22,10 +33,7 @@ export default function TutorPage() {
           <ChatBubble role="user">{prompt}</ChatBubble>
 
           <Card className="overflow-hidden p-4">
-            <p className="text-sm leading-6 text-slate-700">
-              Photosynthesis is how plants make their own food. They use sunlight, water, and carbon dioxide to make glucose
-              (food) and release oxygen.
-            </p>
+            <p className="text-sm leading-6 text-slate-700">{explanation}</p>
             <div className="mt-4 flex items-center justify-between rounded-2xl bg-emerald-50 px-4 py-3">
               <div>
                 <p className="text-sm font-semibold text-emerald-900">Simple explanation</p>
@@ -33,17 +41,20 @@ export default function TutorPage() {
               </div>
               <Sparkles className="h-5 w-5 text-emerald-600" />
             </div>
-            <div className="mt-4 flex items-end justify-between rounded-2xl border border-slate-100 bg-slate-50 p-4">
+            <div className="relative mt-4 flex items-end justify-between rounded-2xl border border-slate-100 bg-slate-50 p-4">
               <div className="space-y-2 text-xs text-slate-600">
                 <p>Sunlight ☀️</p>
                 <p>CO2 →</p>
                 <p>Water →</p>
               </div>
-              <div className="flex flex-col items-center gap-1">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-b from-emerald-100 to-emerald-200 text-emerald-600">
-                  <Volume2 className="h-10 w-10" />
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={handleSpeak}
+                aria-label="Read explanation aloud"
+                className="absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-gradient-to-b from-emerald-100 to-emerald-200 text-emerald-600 shadow-sm transition hover:scale-105 active:scale-95"
+              >
+                <Volume2 className="h-9 w-9" />
+              </button>
               <div className="space-y-2 text-xs text-slate-600">
                 <p>→ O2</p>
                 <p>Glucose (Food)</p>
