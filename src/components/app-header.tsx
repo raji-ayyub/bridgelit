@@ -15,9 +15,9 @@ interface AppHeaderProps {
 export function AppHeader({ title, onBack, onMenu, right }: AppHeaderProps) {
   return (
     <header className="flex items-center justify-between px-4 py-3">
-            <Image src={"images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
 
       <div className="flex items-center gap-3">
+
         {onBack && (
           <button
             onClick={onBack}
@@ -32,8 +32,10 @@ export function AppHeader({ title, onBack, onMenu, right }: AppHeaderProps) {
             <button
               onClick={onMenu}
               aria-label="Open menu"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 gap-2 hover:bg-slate-100"
             >
+              <Image src={"images/bridgelit-logo.png"} alt="logo" width={40} height={40} className="w-[1.5rem]"/>
+
               <Menu className="h-5 w-5" />
             </button>
           </div>
