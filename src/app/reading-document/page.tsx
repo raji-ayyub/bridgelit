@@ -7,7 +7,7 @@ import { AppHeader } from "@/components/app-header";
 import { AppShellNav } from "@/components/app-shell-nav";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { extractTextFromFile } from "@/lib/document-text";
+import { extractTextFromFile, prepareSpeechText } from "@/lib/document-text";
 
 export default function ReadingDocumentPage() {
   const router = useRouter();
@@ -26,6 +26,8 @@ export default function ReadingDocumentPage() {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isCameraStarting, setIsCameraStarting] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const speechQueueRef = useRef<string[]>([]);
+  const speechIndexRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -124,6 +126,9 @@ export default function ReadingDocumentPage() {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
+
+    speechQueueRef.current = [];
+    speechIndexRef.current = 0;
   }
 
   function closeScanner() {
@@ -236,16 +241,39 @@ export default function ReadingDocumentPage() {
     }
 
     window.speechSynthesis.cancel();
+    const chunks = prepareSpeechText(documentText);
+    if (chunks.length === 0) {
+      return;
+    }
 
-    const utterance = new SpeechSynthesisUtterance(documentText);
-    utterance.rate = 0.95;
-    utterance.pitch = 1;
-    utterance.lang = "en-US";
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    speechQueueRef.current = chunks;
+    speechIndexRef.current = 0;
+    setIsSpeaking(true);
 
-    window.speechSynthesis.speak(utterance);
+    const speakNext = () => {
+      const nextChunk = speechQueueRef.current[speechIndexRef.current];
+
+      if (!nextChunk) {
+        setIsSpeaking(false);
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(nextChunk);
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      utterance.lang = "en-US";
+      utterance.onend = () => {
+        speechIndexRef.current += 1;
+        window.setTimeout(speakNext, 180);
+      };
+      utterance.onerror = () => {
+        setIsSpeaking(false);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    };
+
+    speakNext();
   }
 
   return (

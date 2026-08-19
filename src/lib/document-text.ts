@@ -2,12 +2,113 @@ type ProgressReporter = (message: string) => void;
 
 type PdfDocument = import("pdfjs-dist").PDFDocumentProxy;
 
+type PdfTextItem = {
+  str?: string;
+  hasEOL?: boolean;
+};
+
 function isPdf(file: File) {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
 }
 
-function normalizeText(text: string) {
-  return text.replace(/\r\n/g, "\n").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+function normalizeWhitespace(text: string) {
+  return text
+    .replace(/\r\n/g, "\n")
+    .replace(/\u00a0/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function cleanOcrLine(line: string) {
+  const normalized = line
+    .replace(/[|]/g, "I")
+    .replace(/[\u201c\u201d]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u2022\u00b7]/g, " ")
+    .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, "")
+    .replace(/[^\S\n]+/g, " ")
+    .trim();
+
+  if (!normalized) {
+    return "";
+  }
+
+  if (/^[^A-Za-z0-9]+$/.test(normalized)) {
+    return "";
+  }
+
+  return normalized;
+}
+
+function cleanOcrText(text: string) {
+  const lines = text
+    .replace(/\f/g, "\n")
+    .split("\n")
+    .map((line) => cleanOcrLine(line))
+    .filter(Boolean);
+
+  const mergedLines: string[] = [];
+
+  for (const line of lines) {
+    const previous = mergedLines[mergedLines.length - 1];
+    if (previous && previous.endsWith("-")) {
+      mergedLines[mergedLines.length - 1] = `${previous.slice(0, -1)}${line}`;
+      continue;
+    }
+
+    mergedLines.push(line);
+  }
+
+  return normalizeWhitespace(mergedLines.join("\n"));
+}
+
+function buildPdfLines(items: PdfTextItem[]) {
+  const lines: string[] = [];
+  let currentLine: string[] = [];
+
+  for (const item of items) {
+    const value = item.str?.trim();
+    if (value) {
+      const previous = currentLine[currentLine.length - 1];
+      if (previous && previous.endsWith("-")) {
+        currentLine[currentLine.length - 1] = `${previous.slice(0, -1)}${value}`;
+      } else {
+        currentLine.push(value);
+      }
+    }
+
+    if (item.hasEOL) {
+      const line = normalizeWhitespace(currentLine.join(" "));
+      if (line) {
+        lines.push(line);
+      }
+      currentLine = [];
+    }
+  }
+
+  const tail = normalizeWhitespace(currentLine.join(" "));
+  if (tail) {
+    lines.push(tail);
+  }
+
+  return lines;
+}
+
+function formatSpeechText(text: string) {
+  return normalizeWhitespace(text);
+}
+
+function splitSpeechChunk(chunk: string) {
+  return chunk
+    .split(/\n+/)
+    .flatMap((line) =>
+      line
+        .split(/(?<=[.!?])\s+/)
+        .map((part) => part.trim())
+        .filter(Boolean)
+    );
 }
 
 export async function extractTextFromFile(file: File, report: ProgressReporter = () => {}) {
@@ -35,18 +136,15 @@ async function extractTextFromPdf(file: File, report: ProgressReporter) {
     report(`Reading page ${pageNumber} of ${pdf.numPages}...`);
     const page = await pdf.getPage(pageNumber);
     const textContent = await page.getTextContent();
-    const pageText = textContent.items
-      .map((item: unknown) => (typeof item === "object" && item !== null && "str" in item ? String((item as { str?: string }).str ?? "") : ""))
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
+    const pageItems = textContent.items as PdfTextItem[];
+    const pageLines = buildPdfLines(pageItems);
 
-    if (pageText) {
-      textPages.push(pageText);
+    if (pageLines.length > 0) {
+      textPages.push(pageLines.join("\n"));
     }
   }
 
-  const extractedText = normalizeText(textPages.join("\n\n"));
+  const extractedText = normalizeWhitespace(textPages.join("\n\n"));
 
   if (extractedText) {
     return extractedText;
@@ -100,14 +198,14 @@ async function extractTextFromPdfImages(pdf: PdfDocument, report: ProgressReport
 
       await page.render({ canvasContext: context, canvas, viewport }).promise;
       const result = await worker.recognize(canvas);
-      const pageText = normalizeText(result.data.text);
+      const pageText = cleanOcrText(result.data.text);
 
       if (pageText) {
         pageTexts.push(pageText);
       }
     }
 
-    return normalizeText(pageTexts.join("\n\n"));
+    return normalizeWhitespace(pageTexts.join("\n\n"));
   } finally {
     await worker.terminate();
   }
@@ -140,8 +238,20 @@ async function extractTextFromImage(file: File, report: ProgressReporter) {
 
   try {
     const result = await worker.recognize(file);
-    return normalizeText(result.data.text);
+    return cleanOcrText(result.data.text);
   } finally {
     await worker.terminate();
   }
+}
+
+export function prepareSpeechText(text: string) {
+  const cleaned = formatSpeechText(text);
+  if (!cleaned) {
+    return [];
+  }
+
+  return cleaned
+    .split(/\n{2,}/)
+    .flatMap((part) => splitSpeechChunk(part))
+    .filter(Boolean);
 }
