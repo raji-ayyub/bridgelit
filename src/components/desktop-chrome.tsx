@@ -18,7 +18,7 @@ const sidebarItems = [
   { key: "home", label: "Home", href: "/", icon: HomeIcon },
   { key: "tutor", label: "Ask Tutor", href: "/tutor", icon: MessageCircleMore },
   { key: "photo-solver", label: "Photo Solver", href: "/photo-solver", icon: Camera },
-  { key: "reader", label: "Read Document", href: "/reader", icon: FileText },
+  { key: "reader", label: "Read Document", href: "/reading-document", icon: FileText },
   { key: "history", label: "History", href: "/history", icon: Clock3 },
 ];
 

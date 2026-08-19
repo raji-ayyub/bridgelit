@@ -22,7 +22,7 @@ const sidebarItems = [
   { key: "home", label: "Home", href: "/", icon: HomeIcon },
   { key: "tutor", label: "Ask Tutor", href: "/tutor", icon: MessageCircleMore },
   { key: "photo", label: "Photo Solver", href: "/photo-solver", icon: Camera },
-  { key: "reader", label: "Help me read", href: "/reader", icon: FileText },
+  { key: "reader", label: "Help me read", href: "/reading-document", icon: FileText },
   { key: "history", label: "History", href: "/history", icon: Clock3 },
 ];
 
@@ -209,7 +209,7 @@ export function DesktopHome() {
                 title="I need help reading"
                 description="For elders and anyone who wants a document read or explained."
                 cta="Read Now"
-                href="/reader"
+                href="/reading-document"
               />
             </section>
 

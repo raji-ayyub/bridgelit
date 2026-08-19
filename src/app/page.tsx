@@ -58,7 +58,7 @@ function MobileHome() {
           description="For elders and anyone who wants a document read or explained"
           icon={<Image src="/images/geezer.png" alt="" width={72} height={72} className="h-14 w-14 object-contain" />}
           tone="emerald"
-          onClick={() => router.push("/reader")}
+          onClick={() => router.push("/reading-document")}
         />
       </div>
 
